@@ -1,0 +1,22 @@
+{
+  "users": [
+    {
+      "username": "Emilio.Cummerata-Frami",
+      "firstName": "Rex",
+      "lastName": "Runolfsdottir",
+      "email": "Rex.Runolfsdottir@yahoo.com",
+      "emailVerified": false,
+      "enabled": false,
+      "attributes": {
+        "createdAt": "2024-07-13T12:34:56Z"
+      },
+      "credentials": [
+        {
+          "type": "123",
+          "value": "123",
+          "temporary": false
+        }
+      ]
+    }
+  ]
+}

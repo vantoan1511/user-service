@@ -1,0 +1,21 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="${author}" id="${id}-1">
+        <modifyDataType tableName="us_user" columnName="address" newDataType="TEXT"/>
+    </changeSet>
+
+    <changeSet author="${author}" id="${id}-2">
+        <insert tableName="us_user">
+            <column name="id" value="1"></column>
+            <column name="username" value="admin"></column>
+            <column name="email" value="admin@admin.com"></column>
+            <column name="gender" value="UNKNOWN"></column>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"></column>
+            <column name="modified_at" valueComputed="CURRENT_TIMESTAMP"></column>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
