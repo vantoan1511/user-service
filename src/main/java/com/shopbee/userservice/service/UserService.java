@@ -1,24 +1,25 @@
 package com.shopbee.userservice.service;
 
+import com.shopbee.userservice.dto.*;
 import com.shopbee.userservice.entity.User;
 import com.shopbee.userservice.exception.UserException;
 import com.shopbee.userservice.mapper.UserMapper;
-import com.shopbee.userservice.dto.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Optional;
 
-@Slf4j
 @ApplicationScoped
 @Transactional
 public class UserService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
     UserRepository userRepository;
 
@@ -30,12 +31,14 @@ public class UserService {
     }
 
     public PagedResponse<UserDetails> getByCriteria(UserFilter userFilter, UserSort userSort, PageRequest pageRequest) {
+        LOG.info("Start retrieving users... ");
         List<UserDetails> users = UserMapper.toUserDetailsList(userRepository.listAll())
                 .stream()
                 .map(this::withUserStatus)
                 .toList();
         List<UserDetails> filteredUsers = applyFilter(users, userFilter);
         List<UserDetails> sortedUsers = sort(filteredUsers, userSort);
+        LOG.info("Users: {}", sortedUsers);
         return PagedResponse.from(sortedUsers, pageRequest);
     }
 
@@ -134,7 +137,7 @@ public class UserService {
 
     private List<UserDetails> sort(List<UserDetails> users, UserSort userSort) {
         List<UserDetails> sortedUsers = users.stream().sorted(userSort.getSortField().getComparator()).toList();
-        if (userSort.isDescending()) {
+        if (!userSort.isAscending()) {
             return sortedUsers.reversed();
         }
         return sortedUsers;
