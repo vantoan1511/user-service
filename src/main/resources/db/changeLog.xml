@@ -10,4 +10,6 @@
     <include file="/db/0.0.1/changeLog.xml"/>
     <include file="/db/0.0.2/changeLog.xml"/>
     <include file="/db/0.0.3/changeLog.xml"/>
+    <include file="/db/0.0.5/changeLog.xml"/>
+    <include file="/db/0.0.6/changeLog.xml"/>
 </databaseChangeLog>

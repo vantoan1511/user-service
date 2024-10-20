@@ -79,6 +79,7 @@ public class UserService {
         user.setFirstName(userUpdate.getFirstName());
         user.setLastName(userUpdate.getLastName());
         user.setEmail(userUpdate.getEmail());
+        user.setDisabledReason(userUpdate.getDisabledReason());
 
         keycloakService.updateUser(user.getUsername(), userUpdate);
     }

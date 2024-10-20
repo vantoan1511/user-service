@@ -24,4 +24,7 @@ public class UserUpdate {
 
     private boolean emailVerified;
 
+    @Length(max = 255, message = "Reason exceeds the max length of 255 characters")
+    private String disabledReason;
+
 }

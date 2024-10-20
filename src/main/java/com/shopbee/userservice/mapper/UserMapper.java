@@ -1,7 +1,7 @@
 package com.shopbee.userservice.mapper;
 
-import com.shopbee.userservice.entity.User;
 import com.shopbee.userservice.dto.*;
+import com.shopbee.userservice.entity.User;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
@@ -41,9 +41,9 @@ public class UserMapper {
                         .gender(src.getGender())
                         .createdAt(src.getCreatedAt())
                         .modifiedAt(src.getModifiedAt())
+                        .disableReason(src.getDisabledReason())
                         .build())
                 .orElse(new UserDetails());
-
     }
 
     public static Customer toCustomer(User source) {

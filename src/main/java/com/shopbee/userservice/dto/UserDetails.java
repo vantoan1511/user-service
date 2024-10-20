@@ -15,36 +15,22 @@ import java.util.Comparator;
 public class UserDetails implements Comparable<UserDetails> {
 
     private Long id;
-
     private String firstName;
-
     private String lastName;
-
     private String username;
-
     private String email;
-
     private String phone;
-
     private String address;
-
     private String address1;
-
     private String address2;
-
     private String address3;
-
     private String address4;
-
     private Gender gender;
-
     private Timestamp createdAt;
-
     private Timestamp modifiedAt;
-
     private boolean enabled;
-
     private boolean emailVerified;
+    private String disableReason;
 
     @Override
     public int compareTo(UserDetails other) {

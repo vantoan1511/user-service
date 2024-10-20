@@ -57,6 +57,9 @@ public class User implements Comparable<User> {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    @Column(name = "disabled_reason")
+    private String disabledReason;
+
     @Column(name = "created_at")
     @CreationTimestamp
     private Timestamp createdAt;

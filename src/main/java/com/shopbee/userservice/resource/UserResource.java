@@ -3,7 +3,6 @@ package com.shopbee.userservice.resource;
 import com.shopbee.userservice.dto.*;
 import com.shopbee.userservice.entity.User;
 import com.shopbee.userservice.service.UserService;
-import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
