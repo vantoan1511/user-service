@@ -1,18 +1,16 @@
 package com.shopbee.userservice.service;
 
+import com.shopbee.userservice.dto.*;
+import com.shopbee.userservice.entity.User;
 import com.shopbee.userservice.exception.UserException;
 import com.shopbee.userservice.mapper.UserMapper;
-import com.shopbee.userservice.dto.Customer;
-import com.shopbee.userservice.dto.CustomerRegistration;
-import com.shopbee.userservice.dto.CustomerUpdate;
-import com.shopbee.userservice.dto.PasswordUpdate;
-import com.shopbee.userservice.entity.User;
-import com.shopbee.userservice.dto.UserRepository;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.core.Response;
+
+import java.util.Optional;
 
 @ApplicationScoped
 @Transactional
@@ -60,6 +58,7 @@ public class CustomerService {
         user.setAddress4(customerUpdate.getAddress4());
         user.setGender(customerUpdate.getGender());
         user.setPhone(customerUpdate.getPhone());
+        keycloakService.updateCustomer(username, customerUpdate);
     }
 
     public void updatePassword(String username, PasswordUpdate passwordUpdate) {
@@ -67,6 +66,12 @@ public class CustomerService {
             throw new UserException("Password update request is invalid", Response.Status.BAD_REQUEST);
         }
         keycloakService.updatePassword(username, passwordUpdate);
+    }
+
+    public void forgotPassword(ForgotRequest forgotRequest) {
+        String email = Optional.ofNullable(forgotRequest).map(ForgotRequest::getEmail).orElse(null);
+        userRepository.findByEmail(email)
+                .ifPresent(user -> keycloakService.forgotPassword(user.getUsername()));
     }
 
     private void validateUniqueEmailUpdate(String username, String email) {

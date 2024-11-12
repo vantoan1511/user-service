@@ -1,9 +1,6 @@
 package com.shopbee.userservice.resource;
 
-import com.shopbee.userservice.dto.Customer;
-import com.shopbee.userservice.dto.CustomerRegistration;
-import com.shopbee.userservice.dto.CustomerUpdate;
-import com.shopbee.userservice.dto.PasswordUpdate;
+import com.shopbee.userservice.dto.*;
 import com.shopbee.userservice.service.AuthenticationService;
 import com.shopbee.userservice.service.CustomerService;
 import io.quarkus.security.Authenticated;
@@ -63,6 +60,13 @@ public class CustomerResource {
     public Response changePassword(@PathParam("username") String username, @Valid PasswordUpdate passwordUpdate) {
         authenticationService.authenticate(username);
         customerService.updatePassword(username, passwordUpdate);
+        return Response.noContent().build();
+    }
+
+    @POST
+    @Path("forgot")
+    public Response forgotPassword(ForgotRequest forgotRequest) {
+        customerService.forgotPassword(forgotRequest);
         return Response.noContent().build();
     }
 }

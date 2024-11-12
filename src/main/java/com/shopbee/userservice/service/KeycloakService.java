@@ -1,14 +1,11 @@
 package com.shopbee.userservice.service;
 
+import com.shopbee.userservice.dto.*;
 import com.shopbee.userservice.exception.ErrorResponse;
 import com.shopbee.userservice.exception.UserException;
 import com.shopbee.userservice.mapper.UserMapper;
-import com.shopbee.userservice.dto.CustomerRegistration;
-import com.shopbee.userservice.dto.PasswordUpdate;
-import com.shopbee.userservice.dto.PasswordReset;
-import com.shopbee.userservice.dto.UserCreation;
-import com.shopbee.userservice.dto.UserUpdate;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.UserResource;
@@ -26,6 +23,7 @@ public class KeycloakService {
 
     private final Keycloak keycloak;
 
+    @Inject
     public KeycloakService(Keycloak keycloak) {
         this.keycloak = keycloak;
     }
@@ -56,6 +54,15 @@ public class KeycloakService {
         userResource.update(user);
     }
 
+    public void updateCustomer(String username, CustomerUpdate customerUpdate) {
+        UserRepresentation user = getUserByUsername(username);
+        user.setFirstName(customerUpdate.getFirstName());
+        user.setLastName(customerUpdate.getLastName());
+        user.setEmail(customerUpdate.getEmail());
+        UserResource userResource = getUserResourceByUsername(username);
+        userResource.update(user);
+    }
+
     public void delete(String username) {
         String userId = getUserByUsername(username).getId();
         try (Response response = getUsersResource().delete(userId)) {
@@ -79,6 +86,11 @@ public class KeycloakService {
         passwordCredential.setTemporary(passwordReset.isTemporary());
 
         userResource.resetPassword(passwordCredential);
+    }
+
+    public void forgotPassword(String username) {
+        String userId = getUserByUsername(username).getId();
+        getUsersResource().get(userId).executeActionsEmail(List.of("UPDATE_PASSWORD"));
     }
 
     private UserResource getUserResourceByUsername(String username) {
