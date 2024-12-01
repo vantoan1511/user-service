@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,15 @@ public class UserService {
                        KeycloakService keycloakService) {
         this.userRepository = userRepository;
         this.keycloakService = keycloakService;
+    }
+
+    public List<String> getRoles() {
+        return keycloakService.getRoleRepresentations().stream().map(GroupRepresentation::getName).toList();
+    }
+
+    public List<String> getRoles(Long userId) {
+        User user = getById(userId);
+        return keycloakService.getRoleRepresentations(user.getUsername()).stream().map(GroupRepresentation::getName).toList();
     }
 
     public void assignRole(Long userId, String roleName) {
@@ -56,7 +66,10 @@ public class UserService {
     public UserDetails getDetailsById(Long id) {
         User user = getById(id);
         UserRepresentation keycloakUser = keycloakService.getUserByUsername(user.getUsername());
-        return UserMapper.withAccountStatus(user, keycloakUser);
+        List<String> roles = getRoles(id);
+        UserDetails details = UserMapper.withAccountStatus(user, keycloakUser);
+        details.setRoles(roles);
+        return details;
     }
 
     public User getById(Long id) {

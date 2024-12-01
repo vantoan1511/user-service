@@ -21,6 +21,7 @@ public class UserMapper {
         UserDetails userDetails = UserMapper.toUserDetails(user);
         userDetails.setEnabled(keycloakUser.isEnabled());
         userDetails.setEmailVerified(keycloakUser.isEmailVerified());
+        userDetails.setRoles(keycloakUser.getRealmRoles());
         return userDetails;
     }
 

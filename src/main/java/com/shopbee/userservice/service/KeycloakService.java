@@ -28,6 +28,15 @@ public class KeycloakService {
         this.keycloak = keycloak;
     }
 
+    public List<GroupRepresentation> getRoleRepresentations() {
+        return keycloak.realm(Constant.REALM).groups().groups();
+    }
+
+    public List<GroupRepresentation> getRoleRepresentations(String username) {
+        UserResource userResource = getUserResourceByUsername(username);
+        return userResource.groups();
+    }
+
     public void assignRole(String username, String roleGroup) {
         GroupRepresentation roleGroupRepresentation = getGroupRepresentationByGroupName(roleGroup);
         UserResource userResource = getUserResourceByUsername(username);

@@ -41,6 +41,10 @@ public interface IUserAPI {
     @Path("{id}/reset-password")
     Response resetPassword(@PathParam("id") Long id, @Valid PasswordReset passwordReset);
 
+    @GET
+    @Path("{id}/roles")
+    Response getRolesByUserId(@PathParam("id") Long id);
+
     @PATCH
     @Path("{id}/roles/{roleName}")
     Response assignRole(@PathParam("id") Long id, @PathParam("roleName") String roleName);
@@ -48,4 +52,9 @@ public interface IUserAPI {
     @DELETE
     @Path("{id}/roles/{roleName}")
     Response removeRole(@PathParam("id") Long id, @PathParam("roleName") String roleName);
+
+    @GET
+    @Path("roles")
+    Response getRoles();
+
 }

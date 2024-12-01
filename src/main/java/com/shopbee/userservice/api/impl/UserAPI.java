@@ -62,6 +62,11 @@ public class UserAPI implements IUserAPI {
     }
 
     @Override
+    public Response getRolesByUserId(Long id) {
+        return Response.ok(userService.getRoles(id)).build();
+    }
+
+    @Override
     public Response assignRole(Long id, String roleName) {
         userService.assignRole(id, roleName);
         return Response.ok().build();
@@ -71,6 +76,11 @@ public class UserAPI implements IUserAPI {
     public Response removeRole(Long id, String roleName) {
         userService.removeRole(id, roleName);
         return Response.ok().build();
+    }
+
+    @Override
+    public Response getRoles() {
+        return Response.ok(userService.getRoles()).build();
     }
 
 

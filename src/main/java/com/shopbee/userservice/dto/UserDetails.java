@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.util.Comparator;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDetails implements Comparable<UserDetails> {
-
     private Long id;
     private String firstName;
     private String lastName;
@@ -31,6 +31,7 @@ public class UserDetails implements Comparable<UserDetails> {
     private boolean enabled;
     private boolean emailVerified;
     private String disableReason;
+    private List<String> roles;
 
     @Override
     public int compareTo(UserDetails other) {
