@@ -42,6 +42,10 @@ public interface IUserAPI {
     Response resetPassword(@PathParam("id") Long id, @Valid PasswordReset passwordReset);
 
     @PATCH
-    @Path("{id}/roles")
-    Response assignRoles(@PathParam("id") Long id, @Valid AssignRoleRequest assignRoleRequest);
+    @Path("{id}/roles/{roleName}")
+    Response assignRole(@PathParam("id") Long id, @PathParam("roleName") String roleName);
+
+    @DELETE
+    @Path("{id}/roles/{roleName}")
+    Response removeRole(@PathParam("id") Long id, @PathParam("roleName") String roleName);
 }

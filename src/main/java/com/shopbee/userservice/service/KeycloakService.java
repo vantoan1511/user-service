@@ -4,28 +4,40 @@ import com.shopbee.userservice.dto.*;
 import com.shopbee.userservice.exception.ErrorResponse;
 import com.shopbee.userservice.exception.UserServiceException;
 import com.shopbee.userservice.mapper.UserMapper;
+import com.shopbee.userservice.shared.Constant;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.resource.GroupsResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.common.util.CollectionUtil;
 import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
 import java.util.List;
 
 @ApplicationScoped
 public class KeycloakService {
-
-    private static final String REALM = "shopbee";
-
     private final Keycloak keycloak;
 
     @Inject
     public KeycloakService(Keycloak keycloak) {
         this.keycloak = keycloak;
+    }
+
+    public void assignRole(String username, String roleGroup) {
+        GroupRepresentation roleGroupRepresentation = getGroupRepresentationByGroupName(roleGroup);
+        UserResource userResource = getUserResourceByUsername(username);
+        userResource.joinGroup(roleGroupRepresentation.getId());
+    }
+
+    public void removeRole(String username, String roleGroup) {
+        GroupRepresentation roleGroupRepresentation = getGroupRepresentationByGroupName(roleGroup);
+        UserResource userResource = getUserResourceByUsername(username);
+        userResource.leaveGroup(roleGroupRepresentation.getId());
     }
 
     public void createUser(UserCreation userCreation) {
@@ -93,11 +105,6 @@ public class KeycloakService {
         getUsersResource().get(userId).executeActionsEmail(List.of("UPDATE_PASSWORD"));
     }
 
-    private UserResource getUserResourceByUsername(String username) {
-        String userId = getUserByUsername(username).getId();
-        return getUsersResource().get(userId);
-    }
-
     public UserRepresentation getUserByUsername(String username) {
         List<UserRepresentation> users = getUsersResource().searchByUsername(username, true);
         if (CollectionUtil.isEmpty(users)) {
@@ -107,7 +114,24 @@ public class KeycloakService {
     }
 
     private UsersResource getUsersResource() {
-        return keycloak.realm(REALM).users();
+        return keycloak.realm(Constant.REALM).users();
     }
 
+    private UserResource getUserResourceByUsername(String username) {
+        String userId = getUserByUsername(username).getId();
+        return getUsersResource().get(userId);
+    }
+
+    private GroupRepresentation getGroupRepresentationByGroupName(String roleGroup) {
+        GroupsResource groupsResource = getGroupsResource();
+        List<GroupRepresentation> groupRepresentations = groupsResource.groups();
+        return groupRepresentations.stream()
+                .filter(groupRepresentation -> groupRepresentation.getName().equalsIgnoreCase(roleGroup))
+                .findFirst()
+                .orElseThrow(() -> new UserServiceException("Role group " + roleGroup + " not found.", Response.Status.NOT_FOUND));
+    }
+
+    private GroupsResource getGroupsResource() {
+        return keycloak.realm(Constant.REALM).groups();
+    }
 }

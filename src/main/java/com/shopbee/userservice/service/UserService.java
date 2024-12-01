@@ -31,6 +31,16 @@ public class UserService {
         this.keycloakService = keycloakService;
     }
 
+    public void assignRole(Long userId, String roleName) {
+        User user = getById(userId);
+        keycloakService.assignRole(user.getUsername(), roleName);
+    }
+
+    public void removeRole(Long userId, String roleName) {
+        User user = getById(userId);
+        keycloakService.removeRole(user.getUsername(), roleName);
+    }
+
     public PagedResponse<UserDetails> getByCriteria(UserFilter userFilter, UserSort userSort, PageRequest pageRequest) {
         LOG.info("Start retrieving users... ");
         List<UserDetails> users = UserMapper.toUserDetailsList(userRepository.listAll())
@@ -88,6 +98,10 @@ public class UserService {
     public void resetPassword(Long id, PasswordReset passwordReset) {
         String username = getById(id).getUsername();
         keycloakService.resetPassword(username, passwordReset);
+    }
+
+    public void delete(List<Long> ids) {
+        ids.forEach(this::delete);
     }
 
     private List<UserDetails> applyFilter(List<UserDetails> users, UserFilter userFilter) {
@@ -151,10 +165,6 @@ public class UserService {
                 throw new UserServiceException("Email " + email + " has associated with another account", Response.Status.CONFLICT);
             }
         });
-    }
-
-    public void delete(List<Long> ids) {
-        ids.forEach(this::delete);
     }
 
     private void delete(Long id) {
