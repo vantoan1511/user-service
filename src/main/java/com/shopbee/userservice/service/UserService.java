@@ -2,9 +2,10 @@ package com.shopbee.userservice.service;
 
 import com.shopbee.userservice.dto.*;
 import com.shopbee.userservice.entity.User;
-import com.shopbee.userservice.exception.UserException;
+import com.shopbee.userservice.exception.UserServiceException;
 import com.shopbee.userservice.mapper.UserMapper;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 import org.apache.commons.lang3.ObjectUtils;
@@ -20,12 +21,12 @@ import java.util.List;
 public class UserService {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
+    private final UserRepository userRepository;
+    private final KeycloakService keycloakService;
 
-    UserRepository userRepository;
-
-    KeycloakService keycloakService;
-
-    public UserService(UserRepository userRepository, KeycloakService keycloakService) {
+    @Inject
+    public UserService(UserRepository userRepository,
+                       KeycloakService keycloakService) {
         this.userRepository = userRepository;
         this.keycloakService = keycloakService;
     }
@@ -51,18 +52,18 @@ public class UserService {
     public User getById(Long id) {
         return userRepository.findByIdOptional(id)
                 .orElseThrow(() ->
-                        new UserException("User with ID " + id + " not found", Response.Status.NOT_FOUND));
+                        new UserServiceException("User with ID " + id + " not found", Response.Status.NOT_FOUND));
     }
 
     public User getByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() ->
-                        new UserException("User with USERNAME " + username + " not found.", Response.Status.NOT_FOUND));
+                        new UserServiceException("User with USERNAME " + username + " not found.", Response.Status.NOT_FOUND));
     }
 
     public User createNew(UserCreation userCreation) {
         if (userCreation == null) {
-            throw new UserException("Please provide all required information to create an account", Response.Status.BAD_REQUEST);
+            throw new UserServiceException("Please provide all required information to create an account", Response.Status.BAD_REQUEST);
         }
 
         keycloakService.createUser(userCreation);
@@ -147,7 +148,7 @@ public class UserService {
     private void validateUniqueEmailUpdate(Long id, String email) {
         userRepository.findByEmail(email).ifPresent(user -> {
             if (!user.getId().equals(id)) {
-                throw new UserException("Email " + email + " has associated with another account", Response.Status.CONFLICT);
+                throw new UserServiceException("Email " + email + " has associated with another account", Response.Status.CONFLICT);
             }
         });
     }

@@ -1,6 +1,6 @@
 package com.shopbee.userservice.service;
 
-import com.shopbee.userservice.exception.UserException;
+import com.shopbee.userservice.exception.UserServiceException;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.core.Response;
@@ -15,11 +15,11 @@ public class AuthenticationService {
 
     public void authenticate(String username) {
         if (username == null) {
-            throw new UserException("Unauthorized", Response.Status.UNAUTHORIZED);
+            throw new UserServiceException("Unauthorized", Response.Status.UNAUTHORIZED);
         }
 
         if (!getCurrentUsername().equals(username)) {
-            throw new UserException("You do not have permissions", Response.Status.FORBIDDEN);
+            throw new UserServiceException("You do not have permissions", Response.Status.FORBIDDEN);
         }
     }
 

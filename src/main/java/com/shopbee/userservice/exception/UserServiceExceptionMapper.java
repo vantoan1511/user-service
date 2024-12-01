@@ -6,12 +6,12 @@ import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
-public class UserExceptionMapper implements ExceptionMapper<UserException> {
+public class UserServiceExceptionMapper implements ExceptionMapper<UserServiceException> {
 
     @Override
-    public Response toResponse(UserException exception) {
+    public Response toResponse(UserServiceException exception) {
         return Response.status(exception.getResponse().getStatus())
-                .entity(new ErrorResponse(exception.getMessage()))
+                .entity(ErrorResponse.builder().message(exception.getMessage()).build())
                 .type(MediaType.APPLICATION_JSON)
                 .build();
     }

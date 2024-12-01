@@ -1,7 +1,7 @@
 package com.shopbee.userservice.service;
 
 import com.shopbee.userservice.exception.ErrorResponse;
-import com.shopbee.userservice.exception.UserException;
+import com.shopbee.userservice.exception.UserServiceException;
 import com.shopbee.userservice.mapper.UserMapper;
 import com.shopbee.userservice.dto.CustomerRegistration;
 import com.shopbee.userservice.dto.PasswordUpdate;
@@ -45,7 +45,7 @@ public class KeycloakService {
         try (Response response = getUsersResource().create(userRepresentation)) {
             if (response.getStatus() != Response.Status.CREATED.getStatusCode()) {
                 ErrorResponse keycloakResponse = response.readEntity(ErrorResponse.class);
-                throw new UserException(keycloakResponse.getErrorMessage(), response.getStatus());
+                throw new UserServiceException(keycloakResponse.getMessage(), response.getStatus());
             }
         }
     }
@@ -60,7 +60,7 @@ public class KeycloakService {
         String userId = getUserByUsername(username).getId();
         try (Response response = getUsersResource().delete(userId)) {
             if (response.getStatus() != Response.Status.NO_CONTENT.getStatusCode()) {
-                throw new UserException("User does not associated with any Keycloak user", response.getStatus());
+                throw new UserServiceException("User does not associated with any Keycloak user", response.getStatus());
             }
         }
     }
@@ -89,7 +89,7 @@ public class KeycloakService {
     public UserRepresentation getUserByUsername(String username) {
         List<UserRepresentation> users = getUsersResource().searchByUsername(username, true);
         if (CollectionUtil.isEmpty(users)) {
-            throw new UserException("User with username " + username + " not found", Response.Status.NOT_FOUND);
+            throw new UserServiceException("User with username " + username + " not found", Response.Status.NOT_FOUND);
         }
         return users.getFirst();
     }

@@ -1,6 +1,6 @@
 package com.shopbee.userservice.service;
 
-import com.shopbee.userservice.exception.UserException;
+import com.shopbee.userservice.exception.UserServiceException;
 import com.shopbee.userservice.mapper.UserMapper;
 import com.shopbee.userservice.dto.Customer;
 import com.shopbee.userservice.dto.CustomerRegistration;
@@ -64,7 +64,7 @@ public class CustomerService {
 
     public void updatePassword(String username, PasswordUpdate passwordUpdate) {
         if (passwordUpdate == null) {
-            throw new UserException("Password update request is invalid", Response.Status.BAD_REQUEST);
+            throw new UserServiceException("Password update request is invalid", Response.Status.BAD_REQUEST);
         }
         keycloakService.updatePassword(username, passwordUpdate);
     }
@@ -72,7 +72,7 @@ public class CustomerService {
     private void validateUniqueEmailUpdate(String username, String email) {
         userRepository.findByEmail(email).ifPresent(user -> {
             if (!user.getUsername().equals(username)) {
-                throw new UserException("Email " + email + " has associated with another account", Response.Status.CONFLICT);
+                throw new UserServiceException("Email " + email + " has associated with another account", Response.Status.CONFLICT);
             }
         });
     }

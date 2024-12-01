@@ -1,4 +1,4 @@
-package com.shopbee.userservice.resource;
+package com.shopbee.userservice.api.impl;
 
 import com.shopbee.userservice.dto.Customer;
 import com.shopbee.userservice.dto.CustomerRegistration;
@@ -21,14 +21,14 @@ import java.net.URI;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @PermitAll
-public class CustomerResource {
+public class CustomerAPI {
 
     CustomerService customerService;
 
     AuthenticationService authenticationService;
 
-    public CustomerResource(CustomerService customerService,
-                            AuthenticationService authenticationService) {
+    public CustomerAPI(CustomerService customerService,
+                       AuthenticationService authenticationService) {
         this.customerService = customerService;
         this.authenticationService = authenticationService;
     }
